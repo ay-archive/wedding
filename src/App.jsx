@@ -52,6 +52,24 @@ const PHOTO_SLOTS = [
     label: "갤러리 사진 03",
     hint: "public/images/gallery/photo-03.jpg",
   },
+  {
+    src: "/images/gallery/photo-04.jpg",
+    alt: "두 사람의 추억 사진 4",
+    label: "갤러리 사진 04",
+    hint: "public/images/gallery/photo-04.jpg",
+  },
+  {
+    src: "/images/gallery/photo-05.jpg",
+    alt: "두 사람의 추억 사진 5",
+    label: "갤러리 사진 05",
+    hint: "public/images/gallery/photo-05.jpg",
+  },
+  {
+    src: "/images/gallery/photo-06.jpg",
+    alt: "두 사람의 추억 사진 6",
+    label: "갤러리 사진 06",
+    hint: "public/images/gallery/photo-06.jpg",
+  },
 ];
 
 function getDatePartsInTimeZone(timeZone) {
@@ -157,6 +175,7 @@ function PhotoSlot({ src, alt, label, hint, className = "" }) {
 function App() {
   const [countdown, setCountdown] = useState(() => getCountdown());
   const [copiedAccount, setCopiedAccount] = useState("");
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -201,6 +220,22 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [copiedAccount]);
 
+  useEffect(() => {
+    if (!selectedPhoto) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedPhoto(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedPhoto]);
+
   const handleCopyAccount = async (account) => {
     const text = `${account.bank} ${account.number} (${account.holder})`;
 
@@ -220,7 +255,10 @@ function App() {
       <section className="hero" data-reveal>
         <div className="hero__copy">
           <p className="eyebrow">Mobile Wedding Invitation</p>
-          <h1>이나영 그리고 김다솔</h1>
+          <div className="hero__ornament" aria-hidden="true" />
+          <h1>
+            <span className="hero__names">이나영 그리고 김다솔</span>
+          </h1>
           <p className="hero__date">{WEDDING_DATE_LABEL}</p>
           <p className="hero__lead">
             소박하지만 오래 기억될 하루를 준비하고 있습니다.
@@ -230,10 +268,6 @@ function App() {
             <div className="badge">
               <span className="badge__label">D-Day</span>
               <strong>{countdown.label}</strong>
-            </div>
-            <div className="badge badge--soft">
-              <span className="badge__label">Time Zone</span>
-              <strong>Asia/Seoul</strong>
             </div>
           </div>
         </div>
@@ -271,9 +305,23 @@ function App() {
           <p className="section-heading__eyebrow">Countdown</p>
           <strong className="countdown-card__value">{countdown.label}</strong>
           <p className="countdown-card__description">{countdown.description}</p>
-          <p className="countdown-card__caption">
-            날짜 계산은 한국 시간 기준으로 매 분 갱신됩니다.
-          </p>
+        </div>
+      </section>
+
+      <section className="section section--gallery">
+        <div className="gallery-grid">
+          {PHOTO_SLOTS.map((photo, index) => (
+            <button
+              type="button"
+              className="gallery-card"
+              key={photo.src}
+              data-reveal
+              style={{ "--reveal-delay": `${0.1 * index}s` }}
+              onClick={() => setSelectedPhoto(photo)}
+            >
+              <PhotoSlot {...photo} />
+            </button>
+          ))}
         </div>
       </section>
 
@@ -296,9 +344,11 @@ function App() {
                 style={{ "--reveal-delay": `${0.12 * index}s` }}
               >
                 <p className="account-card__side">{account.side}</p>
-                <h3>{account.bank}</h3>
-                <p className="account-card__number">{account.number}</p>
-                <p className="account-card__holder">예금주 {account.holder}</p>
+                <p className="account-card__line">
+                  <span className="account-card__bank">{account.bank}</span>
+                  <span className="account-card__number">{account.number}</span>
+                  <span className="account-card__holder">{account.holder}</span>
+                </p>
                 <button
                   type="button"
                   className="copy-button"
@@ -316,34 +366,34 @@ function App() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-heading" data-reveal>
-          <p className="section-heading__eyebrow">Photo Directory Guide</p>
-          <h2>사진 넣는 위치</h2>
+      {selectedPhoto ? (
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedPhoto.alt}
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <button
+            type="button"
+            className="lightbox__close"
+            aria-label="사진 닫기"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            ×
+          </button>
+          <div
+            className="lightbox__content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              className="lightbox__image"
+              src={selectedPhoto.src}
+              alt={selectedPhoto.alt}
+            />
+          </div>
         </div>
-
-        <div className="gallery-grid">
-          {PHOTO_SLOTS.map((photo, index) => (
-            <div
-              className="gallery-card"
-              key={photo.src}
-              data-reveal
-              style={{ "--reveal-delay": `${0.1 * index}s` }}
-            >
-              <PhotoSlot {...photo} />
-            </div>
-          ))}
-        </div>
-
-        <div className="directory-guide" data-reveal>
-          <p>
-            대표 사진은 <code>public/images/hero/main.jpg</code> 에 넣고, 갤러리
-            사진은 <code>public/images/gallery/</code> 아래에
-            <code>photo-01.jpg</code>, <code>photo-02.jpg</code>,
-            <code>photo-03.jpg</code>처럼 두면 바로 반영됩니다.
-          </p>
-        </div>
-      </section>
+      ) : null}
     </main>
   );
 }
