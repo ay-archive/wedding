@@ -15,6 +15,7 @@ const WEDDING_DATE = {
 
 const WEDDING_DATE_LABEL = "2026.05.16";
 const KOREA_TIME_ZONE = "Asia/Seoul";
+const CALENDAR_WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const INTRODUCTION = [
   "드디어 저희, 결혼합니다! 지구 반대편 여기저기에서 꽤 오래 서로를 지켜온 저희, 드디어 한 걸음 더 나아가기로 했습니다.",
@@ -36,6 +37,21 @@ const ACCOUNTS = [
     bank: "우리은행",
     number: "1002 538 883045",
     holder: "김다솔",
+  },
+];
+
+const FAMILY_INTRO = [
+  {
+    role: "신랑",
+    parents: "김경문 · 주산수",
+    relation: "의 아들",
+    name: "김다솔",
+  },
+  {
+    role: "신부",
+    parents: "이갑재 · 주정자",
+    relation: "의 딸",
+    name: "이나영",
   },
 ];
 
@@ -139,6 +155,26 @@ function getCountdown() {
   };
 }
 
+function getCalendarDays(year, month) {
+  const firstDay = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+  const lastDate = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const days = [];
+
+  for (let index = 0; index < firstDay; index += 1) {
+    days.push(null);
+  }
+
+  for (let day = 1; day <= lastDate; day += 1) {
+    days.push(day);
+  }
+
+  while (days.length % 7 !== 0) {
+    days.push(null);
+  }
+
+  return days;
+}
+
 async function copyToClipboard(text) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(text);
@@ -204,6 +240,7 @@ function App() {
   const [copiedAccount, setCopiedAccount] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const calendarDays = getCalendarDays(WEDDING_DATE.year, WEDDING_DATE.month);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -352,6 +389,66 @@ function App() {
             className="countdown-card__description"
             text={countdown.description}
           />
+          <div className="calendar-card" aria-label="2026년 5월 달력">
+            <div className="calendar-card__header">
+              <span className="calendar-card__label">Calendar</span>
+              <strong>2026년 5월</strong>
+            </div>
+            <div className="calendar-card__grid calendar-card__grid--weekdays">
+              {CALENDAR_WEEKDAYS.map((weekday) => (
+                <span className="calendar-card__weekday" key={weekday}>
+                  {weekday}
+                </span>
+              ))}
+            </div>
+            <div className="calendar-card__grid">
+              {calendarDays.map((day, index) => {
+                const isWeddingDay = day === WEDDING_DATE.day;
+
+                return (
+                  <span
+                    className={`calendar-card__day${
+                      day ? "" : " calendar-card__day--empty"
+                    }${isWeddingDay ? " calendar-card__day--highlight" : ""}`}
+                    key={`${day ?? "empty"}-${index}`}
+                  >
+                    {day ?? ""}
+                  </span>
+                );
+              })}
+            </div>
+            <p className="calendar-card__note">
+              <span>예식일</span>
+              <strong>5월 16일</strong>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--family">
+        <div className="family-card" data-reveal>
+          <p className="section-heading__eyebrow">Bride &amp; Groom</p>
+          <div className="family-card__grid">
+            {FAMILY_INTRO.map((person, index) => (
+              <article
+                className="family-card__person"
+                key={person.role}
+                data-reveal
+                style={{ "--reveal-delay": `${0.1 * index}s` }}
+              >
+                <p className="family-card__parents-line">
+                  <span className="family-card__parents">{person.parents}</span>
+                  <span className="family-card__relation">
+                    {person.relation}
+                  </span>
+                </p>
+                <p className="family-card__name-line">
+                  <span className="family-card__role">{person.role}</span>
+                  <strong className="family-card__name">{person.name}</strong>
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
