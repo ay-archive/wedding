@@ -330,6 +330,7 @@ function App() {
           {INTRODUCTION.map((paragraph) => (
             <ChunkedText key={paragraph} text={paragraph} />
           ))}
+          <p className="story-card__signature">나영, 다솔 드림</p>
         </article>
       </section>
 

@@ -252,6 +252,13 @@
   word-break: keep-all;
 }
 
+.story-card__signature {
+  margin-top: 20px;
+  text-align: right;
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+
 .countdown-card {
   padding: 34px 22px;
   border-radius: 34px;
