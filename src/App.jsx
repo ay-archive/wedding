@@ -258,7 +258,7 @@ function App() {
   }, [selectedPhoto]);
 
   const handleCopyAccount = async (account) => {
-    const text = `${account.bank} ${account.number} (${account.holder})`;
+    const text = account.number;
 
     try {
       await copyToClipboard(text);
