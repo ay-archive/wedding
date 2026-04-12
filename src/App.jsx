@@ -20,16 +20,16 @@ const INTRODUCTION = [
 
 const ACCOUNTS = [
   {
-    side: "신랑측",
-    bank: "우리은행",
-    number: "1002 538 883045",
-    holder: "김다솔",
-  },
-  {
     side: "신부측",
     bank: "하나은행",
     number: "448 910214 36807",
     holder: "이갑재",
+  },
+  {
+    side: "신랑측",
+    bank: "우리은행",
+    number: "1002 538 883045",
+    holder: "김다솔",
   },
 ];
 
@@ -57,18 +57,6 @@ const PHOTO_SLOTS = [
     alt: "두 사람의 추억 사진 4",
     label: "갤러리 사진 04",
     hint: "public/images/gallery/photo-04.jpg",
-  },
-  {
-    src: "/images/gallery/photo-05.jpg",
-    alt: "두 사람의 추억 사진 5",
-    label: "갤러리 사진 05",
-    hint: "public/images/gallery/photo-05.jpg",
-  },
-  {
-    src: "/images/gallery/photo-06.jpg",
-    alt: "두 사람의 추억 사진 6",
-    label: "갤러리 사진 06",
-    hint: "public/images/gallery/photo-06.jpg",
   },
 ];
 
@@ -175,6 +163,7 @@ function PhotoSlot({ src, alt, label, hint, className = "" }) {
 function App() {
   const [countdown, setCountdown] = useState(() => getCountdown());
   const [copiedAccount, setCopiedAccount] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
@@ -221,6 +210,18 @@ function App() {
   }, [copiedAccount]);
 
   useEffect(() => {
+    if (!toastMessage) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      setToastMessage("");
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  useEffect(() => {
     if (!selectedPhoto) {
       return undefined;
     }
@@ -242,13 +243,21 @@ function App() {
     try {
       await copyToClipboard(text);
       setCopiedAccount(account.side);
+      setToastMessage(`${account.bank} 계좌번호가 복사되었습니다.`);
     } catch (error) {
       setCopiedAccount(`${account.side}-error`);
+      setToastMessage("복사에 실패했어요. 다시 시도해 주세요.");
     }
   };
 
   return (
     <main className="page">
+      {toastMessage ? (
+        <div className="toast" role="status" aria-live="polite">
+          {toastMessage}
+        </div>
+      ) : null}
+
       <div className="page__glow page__glow--top" aria-hidden="true" />
       <div className="page__glow page__glow--bottom" aria-hidden="true" />
 
@@ -259,6 +268,7 @@ function App() {
           <h1>
             <span className="hero__names">이나영 그리고 김다솔</span>
           </h1>
+          <p className="hero__headline">결혼합니다!</p>
           <p className="hero__date">{WEDDING_DATE_LABEL}</p>
           <p className="hero__lead">
             소박하지만 오래 기억될 하루를 준비하고 있습니다.
@@ -290,7 +300,7 @@ function App() {
       <section className="section" data-reveal>
         <div className="section-heading">
           <p className="section-heading__eyebrow">Main Letter</p>
-          <h2>메인 인사말</h2>
+          <h2>인사말</h2>
         </div>
 
         <article className="story-card">
@@ -354,7 +364,7 @@ function App() {
                   className="copy-button"
                   onClick={() => handleCopyAccount(account)}
                 >
-                  {isCopied ? "복사 완료" : "계좌번호 복사"}
+                  계좌번호 복사
                 </button>
                 <p className="account-card__feedback" aria-live="polite">
                   {isCopied && `${account.bank} 계좌 정보가 복사되었습니다.`}
