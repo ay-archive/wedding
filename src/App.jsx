@@ -166,6 +166,21 @@ function PhotoSlot({ src, alt, label, hint, className = "" }) {
   );
 }
 
+function ChunkedText({ as: Tag = "p", className = "", text }) {
+  const chunks = text.split(" ");
+
+  return (
+    <Tag className={className}>
+      {chunks.map((chunk, index) => (
+        <span className="text-chunk" key={`${chunk}-${index}`}>
+          {chunk}
+          {index < chunks.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
 function App() {
   const [countdown, setCountdown] = useState(() => getCountdown());
   const [copiedAccount, setCopiedAccount] = useState("");
@@ -311,7 +326,7 @@ function App() {
 
         <article className="story-card">
           {INTRODUCTION.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+            <ChunkedText key={paragraph} text={paragraph} />
           ))}
         </article>
       </section>
@@ -320,7 +335,10 @@ function App() {
         <div className="countdown-card" data-reveal>
           <p className="section-heading__eyebrow">Countdown</p>
           <strong className="countdown-card__value">{countdown.label}</strong>
-          <p className="countdown-card__description">{countdown.description}</p>
+          <ChunkedText
+            className="countdown-card__description"
+            text={countdown.description}
+          />
         </div>
       </section>
 

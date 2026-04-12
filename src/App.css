@@ -306,6 +306,7 @@
   font-size: 0.98rem;
   line-height: 2;
   letter-spacing: -0.01em;
+  word-break: keep-all;
 }
 
 .countdown-card {
@@ -329,6 +330,12 @@
   margin-top: 16px;
   font-size: 1rem;
   line-height: 1.75;
+  word-break: keep-all;
+  text-wrap: pretty;
+}
+
+.text-chunk {
+  display: inline-block;
 }
 
 .account-grid,
