@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+const BASE_URL = import.meta.env.BASE_URL;
+
+function withBaseUrl(path) {
+  return `${BASE_URL}${path}`;
+}
+
 const WEDDING_DATE = {
   year: 2026,
   month: 5,
@@ -35,25 +41,25 @@ const ACCOUNTS = [
 
 const PHOTO_SLOTS = [
   {
-    src: "/images/gallery/photo-01.jpg",
+    src: withBaseUrl("images/gallery/photo-01.jpg"),
     alt: "두 사람의 추억 사진 1",
     label: "갤러리 사진 01",
     hint: "public/images/gallery/photo-01.jpg",
   },
   {
-    src: "/images/gallery/photo-02.jpg",
+    src: withBaseUrl("images/gallery/photo-02.jpg"),
     alt: "두 사람의 추억 사진 2",
     label: "갤러리 사진 02",
     hint: "public/images/gallery/photo-02.jpg",
   },
   {
-    src: "/images/gallery/photo-03.jpg",
+    src: withBaseUrl("images/gallery/photo-03.jpg"),
     alt: "두 사람의 추억 사진 3",
     label: "갤러리 사진 03",
     hint: "public/images/gallery/photo-03.jpg",
   },
   {
-    src: "/images/gallery/photo-04.jpg",
+    src: withBaseUrl("images/gallery/photo-04.jpg"),
     alt: "두 사람의 추억 사진 4",
     label: "갤러리 사진 04",
     hint: "public/images/gallery/photo-04.jpg",
@@ -289,7 +295,7 @@ function App() {
         >
           <PhotoSlot
             className="hero__photo"
-            src="/images/hero/main.jpg"
+            src={withBaseUrl("images/hero/main.jpg")}
             alt="대표 커플 사진"
             label="대표 사진"
             hint="public/images/hero/main.jpg"
