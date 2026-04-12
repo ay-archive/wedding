@@ -417,10 +417,6 @@ function App() {
                 );
               })}
             </div>
-            <p className="calendar-card__note">
-              <span>예식일</span>
-              <strong>5월 16일</strong>
-            </p>
           </div>
         </div>
       </section>
@@ -442,6 +438,7 @@ function App() {
                     {person.relation}
                   </span>
                 </p>
+                <br />
                 <p className="family-card__name-line">
                   <span className="family-card__role">{person.role}</span>
                   <strong className="family-card__name">{person.name}</strong>

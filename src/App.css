@@ -373,27 +373,6 @@
   font-weight: 700;
 }
 
-.calendar-card__note {
-  margin: 14px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: var(--ink-muted);
-  font-size: 0.88rem;
-}
-
-.calendar-card__note span {
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-deep);
-}
-
-.calendar-card__note strong {
-  color: var(--ink-strong);
-  font-size: 0.98rem;
-}
-
 .family-card {
   padding: 26px 20px;
   border-radius: 32px;
