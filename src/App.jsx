@@ -13,7 +13,7 @@ const WEDDING_DATE = {
   day: 16,
 };
 
-const WEDDING_DATE_LABEL = "2026년 5월 16일";
+const WEDDING_DATE_LABEL = "2026.05.16";
 const KOREA_TIME_ZONE = "Asia/Seoul";
 
 const INTRODUCTION = [
@@ -63,6 +63,18 @@ const PHOTO_SLOTS = [
     alt: "두 사람의 추억 사진 4",
     label: "갤러리 사진 04",
     hint: "public/images/gallery/photo-04.jpg",
+  },
+  {
+    src: withBaseUrl("images/gallery/photo-05.jpg"),
+    alt: "두 사람의 추억 사진 5",
+    label: "갤러리 사진 05",
+    hint: "public/images/gallery/photo-05.jpg",
+  },
+  {
+    src: withBaseUrl("images/gallery/photo-06.jpg"),
+    alt: "두 사람의 추억 사진 6",
+    label: "갤러리 사진 06",
+    hint: "public/images/gallery/photo-06.jpg",
   },
 ];
 
@@ -258,7 +270,7 @@ function App() {
   }, [selectedPhoto]);
 
   const handleCopyAccount = async (account) => {
-    const text = account.number;
+    const text = account.number.replace(/\s+/g, "");
 
     try {
       await copyToClipboard(text);
@@ -283,23 +295,14 @@ function App() {
 
       <section className="hero" data-reveal>
         <div className="hero__copy">
-          <p className="eyebrow">Mobile Wedding Invitation</p>
-          <div className="hero__ornament" aria-hidden="true" />
+          <p className="eyebrow">We Are Getting Married</p>
           <h1>
-            <span className="hero__names">이나영 그리고 김다솔</span>
+            <span className="hero__names">나영 &amp; 다솔</span>
           </h1>
-          <p className="hero__headline">결혼합니다!</p>
           <p className="hero__date">{WEDDING_DATE_LABEL}</p>
           <p className="hero__lead">
             소박하지만 오래 기억될 하루를 준비하고 있습니다.
           </p>
-
-          <div className="hero__badge-group">
-            <div className="badge">
-              <span className="badge__label">D-Day</span>
-              <strong>{countdown.label}</strong>
-            </div>
-          </div>
         </div>
 
         <div
