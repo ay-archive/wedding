@@ -78,6 +78,13 @@ const PHOTO_SLOTS = [
   },
 ];
 
+const HERO_PHOTO = {
+  src: withBaseUrl("images/hero/main.jpg"),
+  alt: "대표 커플 사진",
+  label: "대표 사진",
+  hint: "public/images/hero/main.jpg",
+};
+
 function getDatePartsInTimeZone(timeZone) {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone,
@@ -305,19 +312,22 @@ function App() {
           </p>
         </div>
 
-        <div
-          className="hero__visual"
+        <button
+          type="button"
+          className="hero__visual hero__visual-button"
           data-reveal
           style={{ "--reveal-delay": "0.18s" }}
+          onClick={() => setSelectedPhoto(HERO_PHOTO)}
+          aria-label="대표 사진 크게 보기"
         >
           <PhotoSlot
             className="hero__photo"
-            src={withBaseUrl("images/hero/main.jpg")}
-            alt="대표 커플 사진"
-            label="대표 사진"
-            hint="public/images/hero/main.jpg"
+            src={HERO_PHOTO.src}
+            alt={HERO_PHOTO.alt}
+            label={HERO_PHOTO.label}
+            hint={HERO_PHOTO.hint}
           />
-        </div>
+        </button>
       </section>
 
       <section className="section" data-reveal>

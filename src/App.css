@@ -169,6 +169,19 @@
   margin-inline: auto;
 }
 
+.hero__visual-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hero__visual-button:focus-visible {
+  outline: 3px solid rgba(245, 201, 43, 0.28);
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+
 .hero__visual::after {
   content: "";
   position: absolute;
