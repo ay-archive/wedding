@@ -174,7 +174,6 @@ function ChunkedText({ as: Tag = "p", className = "", text }) {
       {chunks.map((chunk, index) => (
         <span className="text-chunk" key={`${chunk}-${index}`}>
           {chunk}
-          {index < chunks.length - 1 ? " " : ""}
         </span>
       ))}
     </Tag>
