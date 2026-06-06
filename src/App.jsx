@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 const BASE_URL = import.meta.env.BASE_URL;
@@ -9,36 +9,54 @@ function withBaseUrl(path) {
 
 const WEDDING_DATE = {
   year: 2026,
-  month: 5,
-  day: 16,
+  month: 11,
+  day: 1,
 };
 
-const WEDDING_DATE_LABEL = "2026.05.16";
+const WEDDING_DATE_LABEL = "2026. 11. 01 SUN PM 13:00";
 const KOREA_TIME_ZONE = "Asia/Seoul";
 const CALENDAR_WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const INTRODUCTION = [
-  "드디어 저희, 결혼합니다! 지구 반대편 여기저기에서 꽤 오래 서로를 지켜온 저희, 드디어 한 걸음 더 나아가기로 했습니다.",
-  "이번 한국 일정이 길지 않다 보니, 정말 번개같이(?) 식을 준비하게 되었어요. 해외에서 조율하다 보니 굉장히 아담한 공간을 선택하게 되어, 가족과 아주 가까운 분들만 모시고 소박한 파티를 열기로 하였습니다.",
-  "마음 같아서는 모든 분을 모시고 한바탕 떠들썩하게 즐기고 싶지만, 너그러운 마음으로 이해해 주세요, 이번에는 멀리서 보내주시는 응원만으로도 큰 힘과 사랑이 될 것 같습니다.",
-  "한국에 있는 동안 한 분 한 분 다 뵙지 못하더라도, 마음만은 늘 가까이에 두겠습니다. 뉴욕에 오시면 현지인 맛집과 야경 코스까지 저희가 책임지고 모실테니 그때 꼭 못다 한 이야기와 축하를 나눠요.",
+  "안녕하세요, 신랑 김경환, 신부 이아영 입니다.",
+  "평생을 함께할 사람을 만나, 결혼을 앞두게 되었습니다.",
+  "처음 만난 날부터 지금까지, 참 많은 시간과 순간을 함께해 왔습니다. 별것 아닌 이야기로 한참을 웃고, 하루의 크고 작은 일들을 가장 먼저 나누며, 어느새 평범한 일상을 가장 행복하게 만들어주는 사람이 되었습니다. 기쁜 날에는 누구보다 함께 기뻐해 주고, 힘든 날에는 묵묵히 곁을 지켜주며 그렇게 서로의 일상이 되어갔습니다.",
+  "함께하는 시간이 쌓일수록 특별한 순간만큼이나 평범한 하루를 함께하는 행복이 크다는 것을 알게 되었습니다. 문득 좋은 일이 생겼을 때 가장 먼저 떠오르는 사람, 어려운 순간에 가장 기대고 싶은 사람, 그리고 앞으로의 계획을 이야기할 때 자연스럽게 함께 그려지는 사람이 서로라는 사실도 알게 되었습니다.",
+  "그렇게 저희는 이제 연인을 넘어 가족이 되어, 앞으로의 삶을 함께 걸어가고자 합니다.",
+  "결혼을 준비하며 돌아보니 지금의 저희가 있기까지 참 많은 분들의 사랑과 응원이 있었다는 것을 다시 한번 느끼게 되었습니다. 늘 따뜻한 마음으로 지켜봐 주시고 응원해 주신 모든 분들께 진심으로 감사드립니다.",
+  "앞으로도 서로를 존중하고 아끼며, 좋은 날에는 기쁨을 나누고 어려운 날에는 힘이 되어주는 부부가 되겠습니다. 완벽하기보다는 서로에게 따뜻한 사람이 되고, 특별한 날들뿐 아니라 평범한 일상 속에서도 행복을 만들어 가며 살아가겠습니다.",
+  "저희의 새로운 시작을 따뜻한 마음으로 축복해 주신다면 더없는 기쁨이 되겠습니다.",
   "감사합니다.",
 ];
 
-const ACCOUNTS = [
-  {
-    side: "신부측",
-    bank: "하나은행",
-    number: "448 910214 36807",
-    holder: "이갑재",
-  },
+const ACCOUNT_GROUPS = [
   {
     side: "신랑측",
-    bank: "우리은행",
-    number: "1002 538 883045",
-    holder: "김다솔",
+    accounts: [
+      { bank: "은행", number: "1002 538 883045", holder: "김다솔" },
+      { bank: "은행", number: "1002 538 883045", holder: "김다솔" },
+    ],
+  },
+  {
+    side: "신부측",
+    accounts: [
+      { bank: "하나은행", number: "448 910214 36807", holder: "이갑재" },
+      { bank: "신한은행", number: "110 355 932959", holder: "이아영" },
+    ],
   },
 ];
+
+const LOCATION = {
+  name: "서울대학교 연구공원 웨딩홀",
+  address: "서울 관악구 관악로 1 연구공원 웨딩홀",
+  lat: 37.4631, // 위도 (정확한 핀 위치로 조정 필요)
+  lng: 126.954, // 경도
+  naverMapUrl:
+    "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EB%8C%80%20%EC%97%B0%EA%B5%AC%EA%B3%B5%EC%9B%90%20%EC%9B%A8%EB%94%A9%ED%99%80/place/13321741",
+  kakaoMapUrl:
+    "https://map.kakao.com/?q=" +
+    encodeURIComponent("서울 관악구 관악로 1 연구공원 웨딩홀"),
+};
 
 const FAMILY_INTRO = [
   {
@@ -51,48 +69,22 @@ const FAMILY_INTRO = [
     role: "신부",
     parents: "이갑재 · 주정자",
     relation: "의 딸",
-    name: "이나영",
+    name: "이아영",
   },
 ];
 
-const PHOTO_SLOTS = [
-  {
-    src: withBaseUrl("images/gallery/photo-01.jpg"),
-    alt: "두 사람의 추억 사진 1",
-    label: "갤러리 사진 01",
-    hint: "public/images/gallery/photo-01.jpg",
-  },
-  {
-    src: withBaseUrl("images/gallery/photo-02.jpg"),
-    alt: "두 사람의 추억 사진 2",
-    label: "갤러리 사진 02",
-    hint: "public/images/gallery/photo-02.jpg",
-  },
-  {
-    src: withBaseUrl("images/gallery/photo-03.jpg"),
-    alt: "두 사람의 추억 사진 3",
-    label: "갤러리 사진 03",
-    hint: "public/images/gallery/photo-03.jpg",
-  },
-  {
-    src: withBaseUrl("images/gallery/photo-04.jpg"),
-    alt: "두 사람의 추억 사진 4",
-    label: "갤러리 사진 04",
-    hint: "public/images/gallery/photo-04.jpg",
-  },
-  {
-    src: withBaseUrl("images/gallery/photo-05.jpg"),
-    alt: "두 사람의 추억 사진 5",
-    label: "갤러리 사진 05",
-    hint: "public/images/gallery/photo-05.jpg",
-  },
-  {
-    src: withBaseUrl("images/gallery/photo-06.jpg"),
-    alt: "두 사람의 추억 사진 6",
-    label: "갤러리 사진 06",
-    hint: "public/images/gallery/photo-06.jpg",
-  },
-];
+const GALLERY_COUNT = 11; 
+
+const PHOTO_SLOTS = Array.from({ length: GALLERY_COUNT }, (_, i) => {
+  const num = String(i + 1).padStart(2, "0"); // 1 → "01"
+  return {
+    src: withBaseUrl(`images/gallery/photo-${num}.jpg`),
+    alt: `두 사람의 추억 사진 ${i + 1}`,
+    label: `갤러리 사진 ${num}`,
+    hint: `public/images/gallery/photo-${num}.jpg`,
+  };
+});
+
 
 const HERO_PHOTO = {
   src: withBaseUrl("images/hero/main.jpg"),
@@ -138,20 +130,20 @@ function getCountdown() {
   if (dayDiff > 0) {
     return {
       label: `D-${dayDiff}`,
-      description: `한국 시간 기준으로 예식일까지 ${dayDiff}일 남았습니다.`,
+      description: `예식일까지 ${dayDiff}일 남았습니다.`,
     };
   }
 
   if (dayDiff === 0) {
     return {
       label: "D-Day",
-      description: "한국 시간 기준으로 오늘이 바로 결혼식 날입니다.",
+      description: "오늘이 바로 결혼식 날입니다.",
     };
   }
 
   return {
     label: `D+${Math.abs(dayDiff)}`,
-    description: `한국 시간 기준으로 예식 후 ${Math.abs(dayDiff)}일이 지났습니다.`,
+    description: `예식 후 ${Math.abs(dayDiff)}일이 지났습니다.`,
   };
 }
 
@@ -239,8 +231,14 @@ function App() {
   const [countdown, setCountdown] = useState(() => getCountdown());
   const [copiedAccount, setCopiedAccount] = useState("");
   const [toastMessage, setToastMessage] = useState("");
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  // 라이트박스: 보여줄 사진 목록 + 현재 인덱스 (null이면 닫힘)
+  const [lightbox, setLightbox] = useState({ photos: [], index: null });
   const calendarDays = getCalendarDays(WEDDING_DATE.year, WEDDING_DATE.month);
+  const touchStartX = useRef(null);
+
+  const isLightboxOpen = lightbox.index !== null;
+  const currentPhoto = isLightboxOpen ? lightbox.photos[lightbox.index] : null;
+  const hasMultiple = lightbox.photos.length > 1;
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -297,31 +295,102 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [toastMessage]);
 
+  // 라이트박스 키보드: Esc 닫기 / ← → 이동
   useEffect(() => {
-    if (!selectedPhoto) {
+    if (!isLightboxOpen) {
       return undefined;
     }
 
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setSelectedPhoto(null);
-      }
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") showPrev();
+      if (event.key === "ArrowRight") showNext();
     };
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedPhoto]);
+  }, [isLightboxOpen]);
+
+  // 카카오 지도 렌더링
+  useEffect(() => {
+    const { kakao } = window;
+    if (!kakao || !kakao.maps) return;
+
+    kakao.maps.load(() => {
+      const container = document.getElementById("kakao-map");
+      if (!container) return;
+
+      const center = new kakao.maps.LatLng(LOCATION.lat, LOCATION.lng);
+      const map = new kakao.maps.Map(container, { center, level: 3 });
+
+      // 핀(마커) 표시
+      new kakao.maps.Marker({ position: center, map });
+
+      // 확대/축소 컨트롤
+      map.addControl(
+        new kakao.maps.ZoomControl(),
+        kakao.maps.ControlPosition.RIGHT,
+      );
+    });
+  }, []);
+
+  // 라이트박스 열기 (사진 목록과 시작 인덱스 지정)
+  const openLightbox = (photos, index) => {
+    setLightbox({ photos, index });
+  };
+
+  const closeLightbox = () => {
+    setLightbox((prev) => ({ ...prev, index: null }));
+  };
+
+  const showPrev = () => {
+    setLightbox((prev) => {
+      if (prev.index === null) return prev;
+      const len = prev.photos.length;
+      return { ...prev, index: (prev.index - 1 + len) % len };
+    });
+  };
+
+  const showNext = () => {
+    setLightbox((prev) => {
+      if (prev.index === null) return prev;
+      const len = prev.photos.length;
+      return { ...prev, index: (prev.index + 1) % len };
+    });
+  };
+
+  // 모바일 스와이프
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current === null) return;
+    const diff = event.changedTouches[0].clientX - touchStartX.current;
+    if (diff > 50) showPrev();
+    if (diff < -50) showNext();
+    touchStartX.current = null;
+  };
 
   const handleCopyAccount = async (account) => {
     const text = account.number.replace(/\s+/g, "");
 
     try {
       await copyToClipboard(text);
-      setCopiedAccount(account.side);
+      setCopiedAccount(account.number);
       setToastMessage(`${account.bank} 계좌번호가 복사되었습니다.`);
     } catch (error) {
-      setCopiedAccount(`${account.side}-error`);
+      setCopiedAccount(`${account.number}-error`);
+      setToastMessage("복사에 실패했어요. 다시 시도해 주세요.");
+    }
+  };
+
+  const handleCopyAddress = async (address) => {
+    try {
+      await copyToClipboard(address);
+      setToastMessage("주소가 복사되었습니다.");
+    } catch (error) {
       setToastMessage("복사에 실패했어요. 다시 시도해 주세요.");
     }
   };
@@ -341,11 +410,17 @@ function App() {
         <div className="hero__copy">
           <p className="eyebrow">We Are Getting Married</p>
           <h1>
-            <span className="hero__names">나영 &amp; 다솔</span>
+            <span className="hero__names">김경환 | 이아영</span>
           </h1>
-          <p className="hero__date">{WEDDING_DATE_LABEL}</p>
+          <p className="hero__date">
+            <br />
+            {WEDDING_DATE_LABEL}
+            <br />
+            서울대학교 연구공원 웨딩홀
+          </p>
           <p className="hero__lead">
-            소박하지만 오래 기억될 하루를 준비하고 있습니다.
+            저희, 결혼합니다! ღ'ᴗ'ღ <br />
+            가을이 머무는 11월의 첫날, 함께 걸어갈 길을 약속하려 합니다. <br />
           </p>
         </div>
 
@@ -354,7 +429,7 @@ function App() {
           className="hero__visual hero__visual-button"
           data-reveal
           style={{ "--reveal-delay": "0.18s" }}
-          onClick={() => setSelectedPhoto(HERO_PHOTO)}
+          onClick={() => openLightbox([HERO_PHOTO], 0)}
           aria-label="대표 사진 크게 보기"
         >
           <PhotoSlot
@@ -377,7 +452,7 @@ function App() {
           {INTRODUCTION.map((paragraph) => (
             <ChunkedText key={paragraph} text={paragraph} />
           ))}
-          <p className="story-card__signature">나영, 다솔 드림</p>
+          <p className="story-card__signature">경환, 아영 드림</p>
         </article>
       </section>
 
@@ -389,10 +464,10 @@ function App() {
             className="countdown-card__description"
             text={countdown.description}
           />
-          <div className="calendar-card" aria-label="2026년 5월 달력">
+          <div className="calendar-card" aria-label="2026년 11월 달력">
             <div className="calendar-card__header">
               <span className="calendar-card__label">Calendar</span>
-              <strong>2026년 5월</strong>
+              <strong>2026년 11월</strong>
             </div>
             <div className="calendar-card__grid calendar-card__grid--weekdays">
               {CALENDAR_WEEKDAYS.map((weekday) => (
@@ -449,7 +524,13 @@ function App() {
         </div>
       </section>
 
+      {/* ===== 새 갤러리 (GALLERY 문구 추가) ===== */}
       <section className="section section--gallery">
+        <div className="section-heading" data-reveal>
+          <p className="section-heading__eyebrow">Gallery</p>
+          {/* <h2>갤러리</h2>  */}
+        </div>
+
         <div className="gallery-grid">
           {PHOTO_SLOTS.map((photo, index) => (
             <button
@@ -458,12 +539,75 @@ function App() {
               key={photo.src}
               data-reveal
               style={{ "--reveal-delay": `${0.1 * index}s` }}
-              onClick={() => setSelectedPhoto(photo)}
+              onClick={() => openLightbox(PHOTO_SLOTS, index)}
             >
               <PhotoSlot {...photo} />
             </button>
           ))}
         </div>
+      </section>
+
+      {/* ===== 오시는 길 (Location) ===== */}
+      <section className="section section--location">
+        <div className="section-heading" data-reveal>
+          <p className="section-heading__eyebrow">Location</p>
+          <h2>오시는 길</h2>
+        </div>
+
+        <article className="location-card" data-reveal>
+          {/* 카카오 실시간 지도 */}
+          <div id="kakao-map" className="location-card__map" />
+
+          <p className="location-card__name">{LOCATION.name}</p>
+          <p className="location-card__address">{LOCATION.address}</p>
+
+          <div className="location-card__buttons">
+            <button
+              type="button"
+              className="copy-button location-card__btn"
+              onClick={() => handleCopyAddress(LOCATION.address)}
+            >
+              주소 복사
+            </button>
+            <a
+              className="copy-button location-card__btn"
+              href={LOCATION.naverMapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              네이버 지도
+            </a>
+            <a
+              className="copy-button location-card__btn"
+              href={LOCATION.kakaoMapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              카카오맵
+            </a>
+          </div>
+        </article>
+
+        {/* 오시는 길 안내 박스 (인사말과 동일한 흰 박스) */}
+        <article className="story-card location-guide" data-reveal>
+          <p>
+            <strong>대중교통</strong>
+            <br />
+            낙성대역에서 02 마을버스를 탑승하여 '가족생활동' 정류장에서 하차해
+            주시기 바랍니다. (약 10분 소요)
+            <br />
+            하차 후 횡단보도를 건너, 버스 진행 방향 기준 왼편의 길로 들어와
+            직진해 주세요.
+            <br />
+            <br />
+            <strong>자가용</strong>
+            <br />
+            웨딩홀 주차장을 이용하실 수 있으며, 주차 공간은 넉넉하게 마련되어
+            있습니다.
+            <br />
+            주차 후 지하 1층(B1)을 통해 웨딩홀(1층)로 바로 이동하실 수 있습니다.
+          </p>
+        </article>
       </section>
 
       <section className="section">
@@ -473,66 +617,104 @@ function App() {
         </div>
 
         <div className="account-grid">
-          {ACCOUNTS.map((account, index) => {
-            const isCopied = copiedAccount === account.side;
-            const copyFailed = copiedAccount === `${account.side}-error`;
+          {ACCOUNT_GROUPS.map((group, groupIndex) => (
+            <article
+              className="account-card"
+              key={group.side}
+              data-reveal
+              style={{ "--reveal-delay": `${0.12 * groupIndex}s` }}
+            >
+              <p className="account-card__side">{group.side}</p>
 
-            return (
-              <article
-                className="account-card"
-                key={account.side}
-                data-reveal
-                style={{ "--reveal-delay": `${0.12 * index}s` }}
-              >
-                <p className="account-card__side">{account.side}</p>
-                <p className="account-card__line">
-                  <span className="account-card__bank">{account.bank}</span>
-                  <span className="account-card__number">{account.number}</span>
-                  <span className="account-card__holder">{account.holder}</span>
-                </p>
-                <button
-                  type="button"
-                  className="copy-button"
-                  onClick={() => handleCopyAccount(account)}
-                >
-                  계좌번호 복사
-                </button>
-                <p className="account-card__feedback" aria-live="polite">
-                  {isCopied && `${account.bank} 계좌 정보가 복사되었습니다.`}
-                  {copyFailed && "복사에 실패했어요. 다시 시도해 주세요."}
-                </p>
-              </article>
-            );
-          })}
+              <div className="account-card__list">
+                {group.accounts.map((account, index) => {
+                  const isCopied = copiedAccount === account.number;
+                  const copyFailed = copiedAccount === `${account.number}-error`;
+
+                  return (
+                    <div className="account-item" key={`${account.number}-${index}`}>
+                      <p className="account-card__line">
+                        <span className="account-card__bank">{account.bank}</span>
+                        <span className="account-card__number">{account.number}</span>
+                        <span className="account-card__holder">{account.holder}</span>
+                      </p>
+                      <button
+                        type="button"
+                        className="copy-button"
+                        onClick={() => handleCopyAccount(account)}
+                      >
+                        계좌번호 복사
+                      </button>
+                      <p className="account-card__feedback" aria-live="polite">
+                        {isCopied && `${account.bank} 계좌 정보가 복사되었습니다.`}
+                        {copyFailed && "복사에 실패했어요. 다시 시도해 주세요."}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
-      {selectedPhoto ? (
+      {isLightboxOpen ? (
         <div
           className="lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label={selectedPhoto.alt}
-          onClick={() => setSelectedPhoto(null)}
+          aria-label={currentPhoto.alt}
+          onClick={closeLightbox}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
           <button
             type="button"
             className="lightbox__close"
             aria-label="사진 닫기"
-            onClick={() => setSelectedPhoto(null)}
+            onClick={closeLightbox}
           >
             ×
           </button>
+
+          {hasMultiple ? (
+            <button
+              type="button"
+              className="lightbox__nav lightbox__nav--prev"
+              aria-label="이전 사진"
+              onClick={(event) => {
+                event.stopPropagation();
+                showPrev();
+              }}
+            >
+              <span className="lightbox__nav-icon">‹</span>
+            </button>
+          ) : null}
+
           <div
             className="lightbox__content"
             onClick={(event) => event.stopPropagation()}
           >
             <img
               className="lightbox__image"
-              src={selectedPhoto.src}
-              alt={selectedPhoto.alt}
+              src={currentPhoto.src}
+              alt={currentPhoto.alt}
             />
           </div>
+
+          {hasMultiple ? (
+            <button
+              type="button"
+              className="lightbox__nav lightbox__nav--next"
+              aria-label="다음 사진"
+              onClick={(event) => {
+                event.stopPropagation();
+                showNext();
+              }}
+            >
+              <span className="lightbox__nav-icon">›</span>
+            </button>
+          ) : null}
         </div>
       ) : null}
     </main>
