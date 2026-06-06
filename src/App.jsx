@@ -73,7 +73,7 @@ const FAMILY_INTRO = [
   },
 ];
 
-const GALLERY_COUNT = 11; 
+const GALLERY_COUNT = 10; 
 
 const PHOTO_SLOTS = Array.from({ length: GALLERY_COUNT }, (_, i) => {
   const num = String(i + 1).padStart(2, "0"); // 1 → "01"
